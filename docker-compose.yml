@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  app:
+    image: net.keithyw.game/game:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql-service
+    networks:
+      - backend
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DB: ${MYSQL_DB}
+  mysql-service:
+    container_name: mysql-service
+    image: mysql:5.7
+    ports:
+    - "33066:3306"
+    volumes:
+      - game-mysql-data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
+
+volumes:
+  game-mysql-data:
+
+networks:
+  backend:
